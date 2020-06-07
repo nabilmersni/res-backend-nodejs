@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
 })
 
 //PUT
-router.put('prestataire/updateAccountState', (req, res) => {
+router.put('/prestataire/updateAccountState', (req, res) => {
     let id = req.body.id;
     User.findOne({ _id: id, role: "prestataire" })
         .then((doc) => {
