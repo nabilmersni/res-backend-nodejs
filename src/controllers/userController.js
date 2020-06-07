@@ -42,6 +42,20 @@ router.post('/', async (req, res) => {
         res.status(400).send(error)
     }
 })
+
+//PUT
+router.put('prestataire/updateAccountState', (req, res) => {
+    let id = req.body.id;
+    User.findOne({ _id: id, role: "prestataire" })
+        .then((doc) => {
+            doc.is_active = !doc.is_active;
+            doc.save();
+            res.status(200).send({ message: "account state updated" })
+        })
+        .catch((err) => {
+            res.status(400).send(err);
+        })
+});
 /*
 router.get('/', function (req, res, next) {
     User.find({}).then(function (users) {
