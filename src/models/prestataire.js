@@ -1,8 +1,12 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 
-const AdminSchema = mongoose.Schema({
-
+const prestataireSchema = mongoose.Schema({
+    fullname: {
+        type: String,
+        required: true,
+        trim: true
+    },
     email: {
         type: String,
         required: true,
@@ -17,10 +21,21 @@ const AdminSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minLength: 7
+        minLength: 8
     },
+    phone: {
+        type: String
+    },
+    image: {
+        type: String
+    },
+    is_active: {
+        type: Boolean,
+        default: false
+    },
+
 })
 
-const Admin = mongoose.model('admins', AdminSchema)
+const Prestataire = mongoose.model('prestataires', prestataireSchema)
 
-module.exports = Admin
+module.exports = Prestataire;
