@@ -85,8 +85,14 @@ app.post('/login', async(req, res) => {
             if (!compare) {
                 res.status(404).send({ msg: "password incorrect" })
             } else {
-                let token = jwt.sign({ role: "prestataire" }, "SECRITOU");
-                res.status(200).send({ token })
+
+                if (!prestataire.is_active) {
+                    res.status(400).send({ msg: "connot login" })
+                } else {
+                    let token = jwt.sign({ role: "prestataire" }, "SECRITOU");
+                    res.status(200).send({ token })
+                }
+
             }
         }
 
