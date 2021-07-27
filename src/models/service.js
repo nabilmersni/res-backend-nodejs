@@ -43,18 +43,10 @@ const ServiceSchema = new Schema({
         type: String
     },
     description: {
-        type: String
+        type: String 
     },
-    photos: [{
-        url: {
-            type: String
-        }
-    }],
-    buisness_opens: [{
-        day: {
-            type: String
-        }
-    }],
+    photos: [],
+    buisness_opens: [],
     booking_deadline: {
         type: String
     },

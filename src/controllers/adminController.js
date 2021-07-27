@@ -25,6 +25,18 @@ app.post('/', async(req, res) => {
     }
 })
 
+//GET
+app.get('/', async(req, res) => {
+
+    try {
+        const admin = await Admin.find()
+        res.status(200).send(admin)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+
+});
+
 app.post('/login', async(req, res) => {
     try {
         let email = req.body.email;
