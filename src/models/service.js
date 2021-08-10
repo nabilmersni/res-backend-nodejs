@@ -6,15 +6,7 @@ const ServiceSchema = new Schema({
     name: {
         type: String
     },
-    type: {
-        type: String
-    },
-    latitude: {
-        type: String
-    },
-    longtitude: {
-        type: String
-    },
+   
     address: {
         type: String
     },
@@ -27,18 +19,7 @@ const ServiceSchema = new Schema({
     secteur: {
         type: String
     },
-    website: {
-        type: String
-    },
-    facebbok_url: {
-        type: String
-    },
-    instagram_url: {
-        type: String
-    },
-    telephone: {
-        type: String
-    },
+   
     nb_reservation: {
         type: String
     },
@@ -50,9 +31,10 @@ const ServiceSchema = new Schema({
     booking_deadline: {
         type: String
     },
-    booking_marjin_time: {
-        type: String
-    }
+    booking_marjin_time_start: {"hour":String, "minute":String,"second":String},
+    booking_marjin_time_end: {"hour":String, "minute":String,"second":String}
+       
+
     //secteur (restauration, coiffure etc), 
     //site web, page facebook, num de téléphone, superficie, matricule fiscal
 });

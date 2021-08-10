@@ -1,7 +1,96 @@
 const express = require('express')
 const bcrypt = require('bcryptjs');
+const User = require('./../models/user');
+const Prestataire = require('./../models/prestataire');
 
-const router = express();
+const jwt = require('jsonwebtoken');
 
 
-module.exports = router
+const app = express();
+
+
+//POST add new user
+app.post('/', async(req, res) => {
+    try {
+        let data = req.body;
+
+        let salt = bcrypt.genSaltSync(10);
+        let hashedPassword = bcrypt.hashSync(data.password, salt);
+
+        const user = new User({
+            fullname: data.fullname,
+            email: data.email,
+            phone: data.phone,
+            password: hashedPassword,
+            
+
+        })
+
+        await user.save()
+        res.status(201).send({ msg: "SAVED" })
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
+
+    }
+})
+
+
+app.post('/login', async(req, res) => {
+    try {
+        let email = req.body.email;
+        let password = req.body.password;
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            //res.status(404).send({ msg: "email incorrect" })
+            let prestataire = await Prestataire.findOne({ email });
+
+            if (!prestataire) {
+                res.status(404).send({ msg: "email incorrect" })
+            } else {
+                let compare = bcrypt.compareSync(password, prestataire.password);
+    
+                if (!compare) {
+                    res.status(404).send({ msg: "password incorrect" })
+                } else {
+    
+                    if (!prestataire.is_active) {
+                        res.status(400).send({ msg: "connot login" })
+                    } else {
+                        let token = jwt.sign({ role: "prestataire",prestataire: prestataire }, "SECRITOU");
+                        res.status(200).send({ token })
+                    }
+    
+                }
+            }
+
+        } else {
+            let compare = bcrypt.compareSync(password, user.password);
+
+            if (!compare) {
+                res.status(404).send({ msg: "password incorrect" })
+            } else {
+
+                if (!user.is_active) {
+                    res.status(400).send({ msg: "connot login" })
+                } else {
+                    let token = jwt.sign({ role: "user",user: user }, "SECRITOU");
+                    res.status(200).send({ token })
+                }
+
+            }
+        }
+
+    } catch (error) {
+        res.status(400).send(error)
+        console.log(error);
+    }
+
+})
+
+
+
+
+module.exports = app;

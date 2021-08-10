@@ -6,7 +6,7 @@ const Prestataire = require('./../models/prestataire');
 
 const app = express();
 
-//GET
+//GET ALL
 app.get('/', async(req, res) => {
 
     try {
@@ -18,6 +18,7 @@ app.get('/', async(req, res) => {
 
 });
 
+// GET BY ID
 app.get('/:id', async(req, res) => {
 
     try {
@@ -33,6 +34,8 @@ app.get('/:id', async(req, res) => {
 
 });
 
+
+//DELETE
 app.delete('/:id', async(req, res) => {
 
     try {
@@ -48,7 +51,7 @@ app.delete('/:id', async(req, res) => {
 
 });
 
-//POST
+//POST add new perstataire
 app.post('/', async(req, res) => {
     try {
         let data = req.body;
@@ -60,13 +63,25 @@ app.post('/', async(req, res) => {
             fullname: data.fullname,
             email: data.email,
             phone: data.phone,
-            password: hashedPassword
+            password: hashedPassword,
+            website: data.website,
+            facebook_url: data.facebook_url,
+            instagram_url: data.instagram_url,
+            latitude: data.latitude,
+            longtitude: data.longtitude,
+            type: data.type,
+            patented: data.patented,
+            NRE: data.NRE,
+            businessName: data.businessName
+
         })
 
         await prestataire.save()
         res.status(201).send({ msg: "SAVED" })
     } catch (error) {
+        console.log(error);
         res.status(400).send(error)
+
     }
 })
 

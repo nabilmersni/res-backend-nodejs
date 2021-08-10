@@ -33,6 +33,33 @@ const prestataireSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    website: {
+        type: String
+    },
+    facebbok_url: {
+        type: String
+    },
+    instagram_url: {
+        type: String
+    },
+    latitude: {
+        type: String
+    },
+    longtitude: {
+        type: String
+    },
+    type: {
+        type: String
+    },
+    NRE: {
+        type: Boolean
+    },
+    patented: {
+        type: Boolean
+    }, 
+    businessName :{
+        type: String
+    }
 
 })
 
