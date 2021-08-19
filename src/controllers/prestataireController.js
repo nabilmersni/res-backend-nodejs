@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const Prestataire = require('./../models/prestataire');
+const Service = require('./../models/service');
+
 
 const app = express();
 
@@ -25,11 +27,14 @@ app.get('/:id', async(req, res) => {
         const prestataire = await Prestataire.findOne({ _id: req.params.id })
         if (!prestataire) {
             res.status(404).send({ msg: "NOT FOUND" })
+            
         } else {
             res.status(200).send(prestataire)
+            console.log(prestataire);
         }
     } catch (error) {
         res.status(400).send(error)
+        console.log(error);
     }
 
 });
@@ -133,5 +138,13 @@ app.put('/:id', async(req, res) => {
         res.status(400).send(error)
     }
 });
+
+
+
+
+
+
+    
+
 
 module.exports = app

@@ -9,7 +9,7 @@ const Service = require('./../models/service');
 
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, './uploads/')
+        callback(null, './uploads/servicephoto')
     },
     filename: function (req, file, callback) {
         callback(null, Date.now() + file.originalname)
@@ -38,6 +38,7 @@ app.get('/:id', async (req, res) => {
         res.status(200).send(service);
     } catch (error) {
         res.status(400).send(error);
+
     }
 
 });
@@ -70,36 +71,22 @@ app.post('/', uploads.array('photos'), async (req, res) => {
 
 
         let data = JSON.parse(req.body.service);
-        //console.log(data.photos[0])
+       console.log(JSON.parse(req.body.service));
         const service = new Service({
             name: data.name,
             type: data.type,
-            latitude: data.latitude,
-            longtitude: data.longtitude,
             address: data.address,
             postalCode: data.postalCode,
             owner_Id: data.owner_Id,
-            secteur: data.secteur,
-           
             telephone: data.telephone,
             nb_reservation: data.nb_reservation,
             description: data.description,
             photos: paths,
             buisness_opens: data.buisness_opens,
             booking_deadline: data.booking_deadline,
-            booking_marjin_time: data.booking_marjin_time
+            booking_marjin_time_start: data.booking_marjin_time_start,
+            booking_marjin_time_end: data.booking_marjin_time_end
         })
-
-        // console.log(req.files[0].path)
-        /* req.files.map(f =>{
-             let i = 0;
-             service.photos.url='hello';
-             i++;
-             console.log(f.path)
-             
-         }
-             );*/
-        // service.photos= req.body.photos
 
         await service.save()
         res.status(201).send({ msg: "SAVED" })
@@ -110,7 +97,7 @@ app.post('/', uploads.array('photos'), async (req, res) => {
 
     }
     catch (error) {
-        console.log(`uploads.array error: ${error}`);
+        console.log(` ${error}`);
         res.status(400).send(error)
         console.log(error)
 
@@ -165,7 +152,6 @@ app.put("/:id",uploads.array('photos'), async (req, res) => {
             booking_marjin_time_end: data.booking_marjin_time_end
         }
 
-
         const service = await Service.findByIdAndUpdate({ _id: req.params.id }, { $set: newService }, { new: true }, (err, doc) => {
             if (!err) { res.status(200).send(doc); }
             else {
@@ -175,6 +161,27 @@ app.put("/:id",uploads.array('photos'), async (req, res) => {
     })
 
 
+    //SEARCH BY category
+
+    app.get('/category/:id', async(req,res)=>{
+
+        try {
+            const service = await Service.find({ type: req.params.id })
+            if (!service) {
+                res.status(404).send({ msg: "NOT FOUND" })
+            } else {
+                
+                res.status(200).send(service);
+
+
+            }
+        } catch (error) {
+            res.status(400).send(error)
+        }  
+
+    })
+
+    
 
 
 module.exports = app

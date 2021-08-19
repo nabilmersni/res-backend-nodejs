@@ -1,3 +1,4 @@
+const { Timestamp } = require('mongodb');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -16,23 +17,23 @@ const ServiceSchema = new Schema({
     owner_Id: {
         type: String
     },
-    secteur: {
-        type: String
-    },
-   
+    
     nb_reservation: {
         type: String
     },
     description: {
         type: String 
     },
+    type:{
+        type: String
+    },
     photos: [],
     buisness_opens: [],
     booking_deadline: {
         type: String
     },
-    booking_marjin_time_start: {"hour":String, "minute":String,"second":String},
-    booking_marjin_time_end: {"hour":String, "minute":String,"second":String}
+    booking_marjin_time_start: {hour:String, minute:String,second:String},
+    booking_marjin_time_end:{hour:String, minute:String,second:String}
        
 
     //secteur (restauration, coiffure etc), 
