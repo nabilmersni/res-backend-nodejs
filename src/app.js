@@ -1,27 +1,17 @@
-const express = require('express')
-const cors = require('cors');
-const bodyParser = require('body-parser');
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
 
-const mongoose = require("./db/connection")
+const userRouter = require("./routes/userRoutes");
+const serviceRouter = require("./routes/serviceRoutes");
 
-const adminController = require('./controllers/adminController');
-const prestataireController = require('./controllers/prestataireController');
-const userController = require('./controllers/userController')
+const app = express();
 
-const app = express()
-const port = process.env.PORT || 3000;
-
-app.use(bodyParser.json())
 app.use(cors());
+app.use(morgan("dev"));
+app.use(express.json());
 
-app.use("/admin", adminController);
-app.use("/prestataire", prestataireController);
-app.use("/user", userController);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/service", serviceRouter);
 
-app.get('/', (req, res) => {
-    res.status(200).send("Welcome To The Server !");
-})
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`)
-})
+module.exports = app;
