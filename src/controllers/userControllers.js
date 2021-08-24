@@ -1,6 +1,7 @@
-const User = require("./../models/userModel");
-const multer = require("multer");
-const sharp = require("sharp");
+const User = require('./../models/userModel');
+const multer = require('multer');
+const sharp = require('sharp');
+const { findByIdAndUpdate } = require('./../models/userModel');
 
 //just a function to filter the req.body: we dont allow the users to change all their properties
 const filterObj = (obj, ...allowedField) => {
@@ -15,10 +16,10 @@ const filterObj = (obj, ...allowedField) => {
 const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
   console.log(file);
-  if (file.mimetype.startsWith("image")) {
+  if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new Error("Please upload only images"), false);
+    cb(new Error('Please upload only images'), false);
   }
 };
 
@@ -27,7 +28,7 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-exports.uploadUserImg = upload.single("imageUrl");
+exports.uploadUserImg = upload.single('imageUrl');
 
 exports.resizeUserImg = (req, res, next) => {
   if (!req.file) return next();
@@ -37,7 +38,7 @@ exports.resizeUserImg = (req, res, next) => {
 
   sharp(req.file.buffer)
     .resize(400, 400)
-    .toFormat("jpeg")
+    .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toFile(`src/public/img/${req.file.filename}`);
 
@@ -49,7 +50,7 @@ exports.getAllUser = async (req, res) => {
     const users = await User.find(req.query);
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       result: users.length,
       data: {
         users,
@@ -57,7 +58,7 @@ exports.getAllUser = async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({
-      status: "fail",
+      status: 'fail',
       message: err.message,
     });
   }
@@ -69,12 +70,12 @@ exports.getOneUser = async (req, res) => {
     const user = await User.findById(userId);
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       user,
     });
   } catch (err) {
     res.status(404).json({
-      status: "fail",
+      status: 'fail',
       message: err.message,
     });
   }
@@ -93,14 +94,14 @@ exports.signUp = async (req, res) => {
     const user = await User.create(req.body);
 
     res.status(201).json({
-      status: "success",
+      status: 'success',
       data: {
         user,
       },
     });
   } catch (err) {
     res.status(400).json({
-      status: "fail",
+      status: 'fail',
       message: err.message,
     });
   }
@@ -109,13 +110,7 @@ exports.signUp = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    const filtredBody = filterObj(
-      req.body,
-      "fullname",
-      "email",
-      "phone",
-      "imageUrl"
-    );
+    const filtredBody = filterObj(req.body, 'fullname', 'email', 'phone', 'imageUrl');
 
     if (req.file) {
       filtredBody.imageUrl = req.file.filename;
@@ -127,14 +122,57 @@ exports.updateUser = async (req, res) => {
     });
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         user,
       },
     });
   } catch (err) {
     res.status(404).json({
-      status: "fail",
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+
+    if (!req.body.oldPassword || !req.body.password || !req.body.newPasswordConfirm) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Please provide all the necessary fields',
+      });
+    }
+    const filtredBody = filterObj(req.body, 'oldPassword', 'password', 'newPasswordConfirm');
+
+    if (!(await user.passwordVerification(req.body.oldPassword, user.password))) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'old password is incorrect',
+      });
+    }
+
+    if (req.body.password !== req.body.newPasswordConfirm) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'password not match',
+      });
+    }
+
+    user.password = req.body.password;
+    await user.save({ validateBeforeSave: true });
+
+    res.status(200).json({
+      status: 'success',
+      user,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
       message: err.message,
     });
   }
