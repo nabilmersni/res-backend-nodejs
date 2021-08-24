@@ -1,19 +1,24 @@
-const express = require('express');
-const userController = require('./../controllers/userControllers');
-const authController = require('./../controllers/authControllers');
+const express = require("express");
+const userController = require("./../controllers/userControllers");
+const authController = require("./../controllers/authControllers");
 
 const router = express.Router();
 
-router.post('/login', authController.login);
+router.post("/login", authController.login);
 
 router
-  .route('/')
+  .route("/")
   .get(authController.protect, userController.getAllUser)
   .post(userController.signUp);
 
 router
-  .route('/:id')
+  .route("/:id")
   .get(authController.protect, userController.getOneUser)
-  .patch(userController.updateUser);
+  .patch(
+    authController.protect,
+    userController.uploadUserImg,
+    userController.resizeUserImg,
+    userController.updateUser
+  );
 
 module.exports = router;
