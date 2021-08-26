@@ -20,6 +20,10 @@ const serviceSchema = new mongoose.Schema({
     type: String,
   },
 
+  ville: {
+    type: String,
+  },
+
   address: {
     type: String,
   },
@@ -52,7 +56,7 @@ const serviceSchema = new mongoose.Schema({
 
   telephone: {
     type: String,
-    // required: [true, 'service must have a phone number'],
+    required: [true, 'service must have a phone number'],
   },
 
   nb_reservation: {
@@ -61,6 +65,11 @@ const serviceSchema = new mongoose.Schema({
 
   description: {
     type: String,
+  },
+
+  mainPhoto: {
+    type: String,
+    default: 'storeDefault.jpeg',
   },
 
   photos: [

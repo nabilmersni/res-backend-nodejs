@@ -58,3 +58,27 @@ exports.updateService = async (req, res) => {
     });
   }
 };
+
+exports.getOneService = async (req, res) => {
+  try {
+    const serviceID = req.params.id;
+    const service = await Service.findById(serviceID);
+
+    if (!service) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'service not found',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      service,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};

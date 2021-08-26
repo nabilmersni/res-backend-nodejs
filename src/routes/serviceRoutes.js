@@ -13,6 +13,9 @@ router
     serviceController.createService
   );
 
-router.route('/:id').patch(serviceController.updateService);
+router
+  .route('/:id')
+  .get(serviceController.getOneService)
+  .patch(serviceController.updateService);
 
 module.exports = router;
